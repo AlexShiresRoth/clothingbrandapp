@@ -4,11 +4,18 @@
 </script>
 
 <style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
   main {
     text-align: center;
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+    width: 1446px;
   }
 
   @media (min-width: 640px) {
@@ -18,7 +25,9 @@
   }
 </style>
 
-<main>
+<div class="container">
   <Nav />
-  <Header />
-</main>
+  <main>
+    <Header />
+  </main>
+</div>

@@ -1,9 +1,10 @@
 <script>
   // your script goes here
+  const logo = "F.A.W";
   const navLinks = ["Men", "Women", "Location", "About", "Contact"];
 </script>
 
-<style>
+<style lang="scss">
   /* your styles go here */
   nav {
     background: #fff;
@@ -12,11 +13,27 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0 2px 2px #eee;
+  }
+  a {
+    color: #666;
+  }
+  .left-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+  .right-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
   }
 </style>
 
 <nav>
-  <div class="left-nav" />
+  <div class="left-nav">{logo}</div>
   <div class="right-nav">
     {#each navLinks as link}
       <a>{link}</a>
