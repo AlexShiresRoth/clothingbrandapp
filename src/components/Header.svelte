@@ -6,13 +6,14 @@
   header {
     background: url("https://res.cloudinary.com/snackmanproductions/image/upload/c_scale,q_52,w_2070/v1579740781/samples/napat-seang-ZackGNxY2Bw-unsplash_fpneo7.jpg");
     background-size: cover;
-    background-position: 0% 80%;
+    background-position: 0% 60%;
     background-repeat: no-repeat;
     height: 50vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0;
   }
   h1 {
     text-transform: uppercase;
@@ -31,6 +32,12 @@
       background: transparent;
       border: 2px solid #f3f3f3;
       color: #f3f3f3;
+      transition: all 0.3s ease-in-out;
+      &:hover {
+        cursor: pointer;
+        background: #f3826f;
+        border: 2px solid #f3826f;
+      }
     }
   }
 </style>

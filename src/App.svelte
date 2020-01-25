@@ -1,6 +1,7 @@
 <script>
   import Nav from "./components/Nav.svelte";
   import Header from "./components/Header.svelte";
+  import TopPicks from "./components/TopPicks.svelte";
 </script>
 
 <style>
@@ -12,7 +13,7 @@
   }
   main {
     text-align: center;
-    padding: 1em;
+    padding: 0;
     max-width: 240px;
     margin: 0 auto;
     width: 1446px;
@@ -29,5 +30,6 @@
   <Nav />
   <main>
     <Header />
+    <TopPicks />
   </main>
 </div>
