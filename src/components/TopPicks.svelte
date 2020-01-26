@@ -1,5 +1,7 @@
 <script>
   // your script goes here
+  import { cartStore } from "./stores.js";
+
   let picks = [
     {
       type: "Joggers",
@@ -24,15 +26,27 @@
         "https://res.cloudinary.com/snackmanproductions/image/upload/c_scale,q_50,w_1003/v1579918545/svelte/sobhan-joodi-iun3EnrZKxI-unsplash_iqji6n.jpg"
     }
   ];
+
+  const addToCart = (e, item) => {
+    cartStore.update(cart => {
+      return [item, ...cart];
+    });
+  };
 </script>
 
 <style lang="scss">
   /* your styles go here */
+  section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 2vh 0;
+  }
   .picks-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin: 5vh 0;
   }
   .pick-container {
     display: flex;
@@ -47,33 +61,56 @@
       grid-template-columns: 1fr;
       grid-template-rows: repeat(4, 1fr);
       gap: 0.5vh;
+      width: 100%;
       & .col {
         background: #fff;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        & button {
+          background: transparent;
+          border: 2px solid #f3826f;
+          color: #f3826f;
+          height: 5vh;
+          width: 7vw;
+          transition: all 0.3s ease-in-out;
+          &:hover {
+            cursor: pointer;
+            color: #f3f3f3;
+            background: #f3826f;
+          }
+        }
       }
     }
   }
 </style>
 
-<div class="picks-grid">
-  {#each picks as item}
-    <div class="pick-container">
-      <div class="left-col">
-        <img src={item.img} alt={item.desc} />
+<section class="section">
+  <h2>Today's Hot Deals.</h2>
+  <div class="picks-grid">
+    {#each picks as item}
+      <div class="pick-container">
+        <div class="left-col">
+          <img src={item.img} alt={item.desc} />
+        </div>
+        <div class="right-col">
+          <div class="col">
+            <h2>{item.type}</h2>
+          </div>
+          <div class="col">
+            <p>{item.desc}</p>
+          </div>
+          <div class="col">
+            <p>${item.price}</p>
+          </div>
+          <div class="col">
+            <button on:click={e => addToCart(e, item)}>Add To Cart</button>
+          </div>
+        </div>
       </div>
-      <div class="right-col">
-        <div class="col">
-          <h2>{item.type}</h2>
-        </div>
-        <div class="col">
-          <p>{item.desc}</p>
-        </div>
-        <div class="col">
-          <p>${item.price}</p>
-        </div>
-        <div class="col">
-          <button>Add To Cart</button>
-        </div>
-      </div>
-    </div>
-  {/each}
-</div>
+    {/each}
+  </div>
+</section>

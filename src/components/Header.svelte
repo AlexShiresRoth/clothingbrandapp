@@ -1,5 +1,5 @@
 <script>
-  export const headerTitle = "Fancy. Athletic. Wear.";
+  export const headerTitle = "Fancy. Active. Wear.";
 </script>
 
 <style lang="scss">
