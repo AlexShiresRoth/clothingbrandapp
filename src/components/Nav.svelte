@@ -1,13 +1,21 @@
 <script>
   // your script goes here
-  import { cartStore } from "./stores.js";
+  import { cartStore, cartState } from "./stores.js";
   const logo = "F.A.W";
-  const navLinks = ["Men", "Women", "Location", "About", "Contact", "Cart"];
+  const navLinks = ["Men", "Women", "Location", "About", "Contact"];
+
   let cartAmount;
+
   let addToStore = cartStore.subscribe(val => {
-    console.log(val);
     return (cartAmount = val.length);
   });
+  //Objects within the cart
+  let cart;
+  //State of cart if user is hovering or not
+  let show;
+  let cartArray = cartStore.subscribe(val => (cart = val));
+  const handleShowCart = e => cartState.update(state => (show = true));
+  const handleRemoveCart = e => cartState.update(state => (show = false));
 </script>
 
 <style lang="scss">
@@ -92,7 +100,15 @@
   </div>
   <div class="right-nav">
     {#each navLinks as link}
-      <a>{link === 'Cart' ? `${link}(${cartAmount})` : link}</a>
+      <a>{link}</a>
     {/each}
+    <a on:mouseenter={handleShowCart} on:mouseleave={handleRemoveCart}>
+      Cart({cartAmount})
+      {#if show}
+        {#each cart as item}
+          <p>{item.type}</p>
+        {/each}
+      {/if}
+    </a>
   </div>
 </nav>
