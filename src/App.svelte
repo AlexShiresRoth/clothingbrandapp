@@ -2,6 +2,8 @@
   import Nav from "./components/Nav.svelte";
   import Header from "./components/Header.svelte";
   import TopPicks from "./components/TopPicks.svelte";
+  import AllProducts from "./components/AllProducts.svelte";
+  import Footer from "./components/Footer.svelte";
 </script>
 
 <style>
@@ -19,6 +21,14 @@
     width: 1446px;
   }
 
+  @media screen and (max-width: 800px) {
+    .container {
+      align-items: flex-start;
+    }
+    main {
+      max-width: none;
+    }
+  }
   @media (min-width: 640px) {
     main {
       max-width: none;
@@ -31,5 +41,7 @@
   <main>
     <Header />
     <TopPicks />
+    <AllProducts />
+    <Footer />
   </main>
 </div>

@@ -40,9 +40,19 @@
       }
     }
   }
+
+  @media screen and (max-width: 800px) {
+    header {
+      width: 100%;
+      height: 40vh;
+      & h1 {
+        font-size: 10vw;
+      }
+    }
+  }
 </style>
 
-<header>
+<header id="header">
 
   <div class="container">
     <h1>{headerTitle}</h1>
