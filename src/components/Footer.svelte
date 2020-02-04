@@ -13,7 +13,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+
+    margin: 5vh 5vw;
     & .footer-left {
       & a {
         text-decoration: none;

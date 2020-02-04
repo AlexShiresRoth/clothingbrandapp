@@ -7,6 +7,11 @@
 </script>
 
 <style>
+  :global(body) {
+    /* this will apply to <body> */
+    /* your styles go here */
+    overflow-x: hidden;
+  }
   .container {
     display: flex;
     flex-direction: column;
@@ -16,15 +21,11 @@
   main {
     text-align: center;
     padding: 0;
-    max-width: 240px;
     margin: 0 auto;
-    width: 1446px;
+    width: 100vw;
   }
 
   @media screen and (max-width: 800px) {
-    .container {
-      align-items: flex-start;
-    }
     main {
       max-width: none;
     }

@@ -27,7 +27,8 @@
     justify-content: flex-start;
 
     & button {
-      max-width: 15vw;
+      width: 15vw;
+      height: 7vh;
       font-size: 1.5vw;
       background: transparent;
       border: 2px solid #f3f3f3;

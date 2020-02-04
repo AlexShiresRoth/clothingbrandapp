@@ -1,6 +1,9 @@
 <script>
   // your script goes here
-  import { cartStore, cartState, navState } from "./stores.js";
+  //DRY up this component
+  import { onMount, afterUpdate } from "svelte";
+  import MobileNav from "./MobileNav.svelte";
+  import { cartStore, cartState, navState, isMobile } from "./stores.js";
   const logo = "F.A.W";
   const navLinks = ["Men", "Women", "Location", "About", "Contact"];
 
@@ -28,6 +31,7 @@
 
   //show or hide nav when user scrolls
   let navShowState;
+
   window.addEventListener("scroll", () => {
     const target = document.querySelector("#header");
     let observer = new IntersectionObserver(
@@ -45,6 +49,19 @@
     );
     if (target) observer.observe(target);
   });
+
+  //handle mobile screen sizing
+  const mobileController = () => {
+    const handleMobileState = () => {
+      return window.innerWidth <= 800
+        ? isMobile.update(state => (state = true))
+        : isMobile.update(state => (state = false));
+    };
+    return [handleMobileState];
+  };
+  const mobileControl = mobileController();
+  const handleMobileState = mobileControl[0];
+  window.addEventListener("resize", () => handleMobileState());
 </script>
 
 <style lang="scss">
@@ -52,7 +69,6 @@
   .transparent-nav {
     background: transparent;
     height: 5rem;
-    max-width: 1446px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -75,7 +91,6 @@
   .white-nav {
     background: #fff;
     height: 5rem;
-    max-width: 1446px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -192,43 +207,145 @@
       }
     }
   }
+  @media screen and (max-width: 800px) {
+    .left-nav {
+      display: flex;
+      width: 100%;
+      justify-content: flex-start;
+      & a {
+        margin-left: 2vw;
+        font-size: 4vw;
+        font-family: "Lobster";
+        font-weight: 100;
+        text-decoration: none;
+      }
+    }
+    .right-nav {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-around;
+      & a {
+        font-size: 1vw;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+          cursor: pointer;
+          text-decoration: none;
+          color: #000;
+        }
+        &::after {
+          position: absolute;
+          content: "";
+          width: 0px;
+          background: #000;
+          height: 3px;
+          transition: all 0.3s ease-in-out;
+          display: block;
+          bottom: 0;
+        }
+        &:hover::after {
+          width: 100%;
+        }
+      }
+      .cart-link {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        & .cart {
+          position: absolute;
+          min-width: 10rem;
+          top: 100%;
+          left: -100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          background: #fff;
+          & .cart-item {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #eee;
+            padding: 0.5rem 0;
+            & .cart-row {
+              display: flex;
+              flex-direction: row;
+              & .detail-container {
+                & p {
+                  font-size: 16px;
+                }
+              }
+              & .img-container {
+                display: flex;
+                flex-direction: row;
+                & img {
+                  width: 5vw;
+                }
+              }
+              & button {
+                background: #f3826f;
+                color: #fff;
+                border: 1px solid #f3826f;
+                font-size: 16px;
+                width: 100%;
+                &:hover {
+                  cursor: pointer;
+                  background: darken(#f3826f, 5%);
+                  border: 1px solid darken(#f3826f, 5%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 </style>
 
-<nav class={navShowState ? 'white-nav' : 'transparent-nav'}>
-  <div class="left-nav">
-    <a>{logo}</a>
-  </div>
-  <div class="right-nav">
-    {#each navLinks as link}
-      <a>{link}</a>
-    {/each}
-    <a
-      on:mouseenter={handleShowCart}
-      on:mouseleave={handleRemoveCart}
-      class="cart-link">
-      Cart({cartAmount})
-      {#if show}
-        <div class="cart">
-          {#each cart as item}
-            <div class="cart-item">
-              <div class="cart-row">
-                <div class="img-container">
-                  <img src={item.img} alt={item.type} />
+{#if $isMobile}
+  <MobileNav />
+{:else}
+  <!-- else content here -->
+  <nav class={navShowState ? 'white-nav' : 'transparent-nav'}>
+    <div class="left-nav">
+      <a>{logo}</a>
+    </div>
+    <div class="right-nav">
+      {#each navLinks as link}
+        <a>{link}</a>
+      {/each}
+      <a
+        on:mouseenter={handleShowCart}
+        on:mouseleave={handleRemoveCart}
+        class="cart-link">
+        Cart({cartAmount})
+        {#if show}
+          <div class="cart">
+            {#each cart as item}
+              <div class="cart-item">
+                <div class="cart-row">
+                  <div class="img-container">
+                    <img src={item.img} alt={item.type} />
+                  </div>
+                  <div class="detail-container">
+                    <p>{item.type}</p>
+                    <p>${item.price}</p>
+                  </div>
                 </div>
-                <div class="detail-container">
-                  <p>{item.type}</p>
-                  <p>${item.price}</p>
+                <div class="cart-row">
+                  <button on:click={e => handleRemoveFromCart(e, item)}>
+                    Remove
+                  </button>
                 </div>
               </div>
-              <div class="cart-row">
-                <button on:click={e => handleRemoveFromCart(e, item)}>
-                  Remove
-                </button>
-              </div>
-            </div>
-          {/each}
-        </div>
-      {/if}
-    </a>
-  </div>
-</nav>
+            {/each}
+          </div>
+        {/if}
+      </a>
+    </div>
+  </nav>
+{/if}

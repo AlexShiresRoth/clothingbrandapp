@@ -12,7 +12,7 @@
   .all-products {
     display: flex;
     flex-direction: column;
-    margin: 5vh 0;
+    margin: 5vh 5vw;
     & .button-container {
       margin: 2vh 0;
       & button {
@@ -39,8 +39,15 @@
       & .clothing-item {
         position: relative;
         box-shadow: 0 5px 5px darken(#eee, 10%);
+        max-width: 100%;
+        overflow: hidden;
         & img {
           width: 100%;
+          transition: all 0.3s ease-in-out;
+          &:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+          }
         }
         & .item-container {
           position: absolute;
