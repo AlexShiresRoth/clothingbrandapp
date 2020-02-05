@@ -9,7 +9,7 @@
 
   let cartAmount;
 
-  let addToStore = cartStore.subscribe(val => {
+  const addToStore = cartStore.subscribe(val => {
     return (cartAmount = val.length);
   });
 
@@ -29,26 +29,33 @@
     );
   };
 
-  //show or hide nav when user scrolls
-  let navShowState;
+  const cartController = () => {};
 
-  window.addEventListener("scroll", () => {
-    const target = document.querySelector("#header");
-    let observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.intersectionRatio <= 0.6) {
-            navState.update(state => (navShowState = true));
-          } else navState.update(state => (navShowState = false));
-        });
-      },
-      {
-        rootMargin: "0px",
-        threshold: [0.5, 0.5, 0.5, 0.5]
-      }
-    );
-    if (target) observer.observe(target);
-  });
+  //show or hide nav when user scrolls
+  const navController = () => {
+    const handleScroll = () => {
+      const target = document.querySelector("#header");
+      let observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.intersectionRatio <= 0.6) {
+              navState.update(state => (state = true));
+            } else navState.update(state => (state = false));
+          });
+        },
+        {
+          rootMargin: "0px",
+          threshold: [0.5, 0.5, 0.5, 0.5]
+        }
+      );
+      if (target) observer.observe(target);
+    };
+    return [handleScroll];
+  };
+
+  const navControl = navController();
+  const handleScroll = navControl[0];
+  window.addEventListener("scroll", handleScroll);
 
   //handle mobile screen sizing
   const mobileController = () => {
@@ -310,7 +317,7 @@
   <MobileNav />
 {:else}
   <!-- else content here -->
-  <nav class={navShowState ? 'white-nav' : 'transparent-nav'}>
+  <nav class={$navState ? 'white-nav' : 'transparent-nav'}>
     <div class="left-nav">
       <a>{logo}</a>
     </div>
