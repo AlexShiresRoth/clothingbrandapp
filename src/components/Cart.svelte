@@ -1,5 +1,11 @@
 <script>
-  import { cartStore, cartState, navIntersect, navState } from "./stores.js";
+  import {
+    cartStore,
+    cartState,
+    navIntersect,
+    navState,
+    isHovering
+  } from "./stores.js";
 
   let cartAmount;
   const addToStore = cartStore.subscribe(val => {
@@ -167,7 +173,7 @@
 <a
   on:mouseenter={handleShowCart}
   on:mouseleave={handleRemoveCart}
-  class={$navIntersect && $navState ? 'cart-link white-bg' : !$navIntersect && !$navState ? 'cart-link ' : 'cart-link white-bg'}>
+  class={$navIntersect && $isHovering ? 'cart-link white-bg' : !$navIntersect && $isHovering ? 'cart-link white-bg' : $navIntersect && !$isHovering ? 'cart-link white-bg' : 'cart-link'}>
   Cart({cartAmount})
   {#if show}
     <div class="cart">

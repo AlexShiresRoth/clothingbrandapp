@@ -6,6 +6,8 @@ export const cartState = writable(false);
 
 export const navState = writable(false);
 
+export const isHovering = writable(false);
+
 export const navIntersect = writable(false);
 
 export const isMobile = writable(false);

@@ -4,14 +4,13 @@
   import { onMount, afterUpdate } from "svelte";
   import MobileNav from "./MobileNav.svelte";
   import Cart from "./Cart.svelte";
-  import { navState, isMobile, navIntersect } from "./stores.js";
+  import { navState, isMobile, navIntersect, isHovering } from "./stores.js";
 
   const logo = "F.A.W";
   export let navLinks = ["Men", "Women", "Location", "About", "Contact"];
 
   //show or hide nav when user scrolls
   const navController = () => {
-    let isHovering = false;
     const handleScroll = () => {
       const target = document.querySelector("#header");
       let observer = new IntersectionObserver(
@@ -35,11 +34,12 @@
     };
 
     const handleNavState = e => {
-      isHovering = true;
+      if (e.type === "mouseenter") isHovering.update(state => (state = true));
+      if (e.type === "mouseleave") isHovering.update(state => (state = false));
       return navState.update(state =>
-        $navIntersect && isHovering
+        $navIntersect && $isHovering
           ? null
-          : !$navIntersect && isHovering
+          : !$navIntersect && $isHovering
           ? (state = true)
           : (state = true)
       );

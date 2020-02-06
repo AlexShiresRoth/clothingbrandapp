@@ -1,6 +1,6 @@
 <script>
   // your script goes here
-  import { showSideMenu, cartStore } from "./stores";
+  import { showSideMenu, cartStore, isMobile } from "./stores";
   import Cart from "./Cart.svelte";
   //props from Nav
   export let navLinks;
@@ -8,19 +8,21 @@
   let rotated = false;
   let menu;
   const handleClickMenu = function(e) {
-    if (e.target && e.target.closest("div").classList.contains("mobile-menu")) {
-      return (
-        rotated
-          ? ((rotated = false), showSideMenu.update(state => (state = false)))
-          : (rotated = true),
-        showSideMenu.update(state => (state = true))
-      );
-    }
+    return (
+      $showSideMenu
+        ? ((rotated = !rotated), showSideMenu.update(state => (state = false)))
+        : (rotated = true),
+      showSideMenu.update(state => (state = true))
+    );
   };
   const closeMenu = () => {
     rotated = !rotated;
-    showSideMenu.update(state => (state = false));
+    return showSideMenu.update(state => (state = false));
   };
+
+  window.addEventListener("resize", () =>
+    showSideMenu.update(state => (state = false))
+  );
 </script>
 
 <style lang="scss">
@@ -35,9 +37,10 @@
     width: 100%;
     position: fixed;
     box-shadow: 0 1px 1px darken(#fff, 5%);
+    z-index: 1000;
     & .mobile-left-nav {
       & a {
-        margin-left: 2vw;
+        margin-left: 5vw;
         font-size: 5vw;
         font-family: "Lobster";
         font-weight: 100;
@@ -47,7 +50,7 @@
     }
     & .mobile-right-nav {
       display: flex;
-      margin-right: 2vw;
+      margin-right: 5vw;
       &:hover {
         cursor: pointer;
       }
@@ -85,7 +88,6 @@
     height: 100vh;
     width: 100vw;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 1px 1px darken(#333, 20%);
     z-index: 9999;
     & .list-container {
       display: flex;
@@ -95,6 +97,7 @@
       height: 100%;
       width: 50%;
       background: #fff;
+      box-shadow: 0 2px 2px darken(#fff, 20%);
       & a {
         text-align: center;
         width: 100%;

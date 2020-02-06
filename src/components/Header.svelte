@@ -31,13 +31,15 @@
       height: 7vh;
       font-size: 1.5vw;
       background: transparent;
-      border: 2px solid #f3f3f3;
+      border: 5px solid #f3826f;
+      border-top: 5px solid #f3f3f3;
+      border-left: 5px solid #fff;
       color: #f3f3f3;
       transition: all 0.3s ease-in-out;
       &:hover {
         cursor: pointer;
         background: #f3826f;
-        border: 2px solid #f3826f;
+        border: 5px solid transparent;
       }
     }
   }
@@ -46,6 +48,7 @@
     header {
       width: 100%;
       height: 30vh;
+      background-position: 0% 80%;
       & h1 {
         font-size: 9vw;
         font-weight: 500;
@@ -69,7 +72,7 @@
         &:hover {
           cursor: pointer;
           background: #f3826f;
-          border: 2px solid #f3826f;
+          border: 5px solid transparent;
           color: #fff;
         }
       }

@@ -44,6 +44,48 @@
       }
     }
   }
+  @media screen and (max-width: 800px) {
+    footer {
+      border-top: 2px solid #eee;
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      margin: 5vh 5vw 0;
+      & .footer-left {
+        & a {
+          text-decoration: none;
+          color: #f3826f;
+          font-family: "Lobster", serif;
+          font-size: 5vw;
+        }
+      }
+      & .footer-right {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 1rem 0;
+        & a {
+          color: #999;
+          font-size: 3vw;
+          margin: 0 2vw;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        & .social {
+          margin: 1rem 0;
+          & a {
+            color: #f3826f;
+            font-size: 5vw;
+          }
+        }
+      }
+    }
+  }
 </style>
 
 <footer>
