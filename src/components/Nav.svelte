@@ -3,44 +3,27 @@
   //DRY up this component
   import { onMount, afterUpdate } from "svelte";
   import MobileNav from "./MobileNav.svelte";
-  import { cartStore, cartState, navState, isMobile } from "./stores.js";
+  import Cart from "./Cart.svelte";
+  import { navState, isMobile, navIntersect } from "./stores.js";
+
   const logo = "F.A.W";
-  const navLinks = ["Men", "Women", "Location", "About", "Contact"];
-
-  let cartAmount;
-
-  const addToStore = cartStore.subscribe(val => {
-    return (cartAmount = val.length);
-  });
-
-  //Objects within the cart
-  let cart;
-
-  //State of cart if user is hovering or not
-  let show;
-  let cartArray = cartStore.subscribe(val => (cart = val));
-  const handleShowCart = e => cartState.update(state => (show = true));
-  const handleRemoveCart = e => cartState.update(state => (show = false));
-
-  const handleRemoveFromCart = (e, item) => {
-    cartStore.update(
-      currentCart =>
-        (cart = currentCart.filter(cartItem => cartItem.id !== item.id))
-    );
-  };
-
-  const cartController = () => {};
+  export let navLinks = ["Men", "Women", "Location", "About", "Contact"];
 
   //show or hide nav when user scrolls
   const navController = () => {
+    let isHovering = false;
     const handleScroll = () => {
       const target = document.querySelector("#header");
       let observer = new IntersectionObserver(
         entries => {
           entries.forEach(entry => {
             if (entry.intersectionRatio <= 0.6) {
+              navIntersect.update(state => (state = true));
               navState.update(state => (state = true));
-            } else navState.update(state => (state = false));
+            } else {
+              navIntersect.update(state => (state = false));
+              navState.update(state => (state = false));
+            }
           });
         },
         {
@@ -50,11 +33,24 @@
       );
       if (target) observer.observe(target);
     };
-    return [handleScroll];
+
+    const handleNavState = e => {
+      isHovering = true;
+      return navState.update(state =>
+        $navIntersect && isHovering
+          ? null
+          : !$navIntersect && isHovering
+          ? (state = true)
+          : (state = true)
+      );
+    };
+
+    return [handleScroll, handleNavState];
   };
 
   const navControl = navController();
   const handleScroll = navControl[0];
+  const handleNavState = navControl[1];
   window.addEventListener("scroll", handleScroll);
 
   //handle mobile screen sizing
@@ -69,6 +65,10 @@
   const mobileControl = mobileController();
   const handleMobileState = mobileControl[0];
   window.addEventListener("resize", () => handleMobileState());
+
+  onMount(() => {
+    handleMobileState();
+  });
 </script>
 
 <style lang="scss">
@@ -164,55 +164,6 @@
         width: 100%;
       }
     }
-    .cart-link {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      & .cart {
-        position: absolute;
-        min-width: 10rem;
-        top: 100%;
-        left: -100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        background: #fff;
-        & .cart-item {
-          display: flex;
-          flex-direction: column;
-          border-bottom: 1px solid #eee;
-          padding: 0.5rem 0;
-          & .cart-row {
-            display: flex;
-            flex-direction: row;
-            & .detail-container {
-              & p {
-                font-size: 16px;
-              }
-            }
-            & .img-container {
-              display: flex;
-              flex-direction: row;
-              & img {
-                width: 5vw;
-              }
-            }
-            & button {
-              background: #f3826f;
-              color: #fff;
-              border: 1px solid #f3826f;
-              font-size: 16px;
-              width: 100%;
-              &:hover {
-                cursor: pointer;
-                background: darken(#f3826f, 5%);
-                border: 1px solid darken(#f3826f, 5%);
-              }
-            }
-          }
-        }
-      }
-    }
   }
   @media screen and (max-width: 800px) {
     .left-nav {
@@ -260,64 +211,17 @@
           width: 100%;
         }
       }
-      .cart-link {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        & .cart {
-          position: absolute;
-          min-width: 10rem;
-          top: 100%;
-          left: -100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          background: #fff;
-          & .cart-item {
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid #eee;
-            padding: 0.5rem 0;
-            & .cart-row {
-              display: flex;
-              flex-direction: row;
-              & .detail-container {
-                & p {
-                  font-size: 16px;
-                }
-              }
-              & .img-container {
-                display: flex;
-                flex-direction: row;
-                & img {
-                  width: 5vw;
-                }
-              }
-              & button {
-                background: #f3826f;
-                color: #fff;
-                border: 1px solid #f3826f;
-                font-size: 16px;
-                width: 100%;
-                &:hover {
-                  cursor: pointer;
-                  background: darken(#f3826f, 5%);
-                  border: 1px solid darken(#f3826f, 5%);
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 </style>
 
 {#if $isMobile}
-  <MobileNav />
+  <MobileNav {navLinks} />
 {:else}
-  <!-- else content here -->
-  <nav class={$navState ? 'white-nav' : 'transparent-nav'}>
+  <nav
+    class={$navIntersect ? 'white-nav' : 'transparent-nav'}
+    on:mouseenter={handleNavState}
+    on:mouseleave={handleNavState}>
     <div class="left-nav">
       <a>{logo}</a>
     </div>
@@ -325,34 +229,7 @@
       {#each navLinks as link}
         <a>{link}</a>
       {/each}
-      <a
-        on:mouseenter={handleShowCart}
-        on:mouseleave={handleRemoveCart}
-        class="cart-link">
-        Cart({cartAmount})
-        {#if show}
-          <div class="cart">
-            {#each cart as item}
-              <div class="cart-item">
-                <div class="cart-row">
-                  <div class="img-container">
-                    <img src={item.img} alt={item.type} />
-                  </div>
-                  <div class="detail-container">
-                    <p>{item.type}</p>
-                    <p>${item.price}</p>
-                  </div>
-                </div>
-                <div class="cart-row">
-                  <button on:click={e => handleRemoveFromCart(e, item)}>
-                    Remove
-                  </button>
-                </div>
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </a>
+      <Cart />
     </div>
   </nav>
 {/if}

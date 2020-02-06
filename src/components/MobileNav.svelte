@@ -1,25 +1,40 @@
 <script>
   // your script goes here
+  import { showSideMenu, cartStore } from "./stores";
+  import Cart from "./Cart.svelte";
+  //props from Nav
+  export let navLinks;
   const logo = "F.A.W";
   let rotated = false;
   let menu;
   const handleClickMenu = function(e) {
     if (e.target && e.target.closest("div").classList.contains("mobile-menu")) {
-      return rotated ? (rotated = false) : (rotated = true);
+      return (
+        rotated
+          ? ((rotated = false), showSideMenu.update(state => (state = false)))
+          : (rotated = true),
+        showSideMenu.update(state => (state = true))
+      );
     }
+  };
+  const closeMenu = () => {
+    rotated = !rotated;
+    showSideMenu.update(state => (state = false));
   };
 </script>
 
 <style lang="scss">
   /* your styles go here */
   nav {
-    height: 5rem;
+    height: 4rem;
     background: #fff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    position: fixed;
+    box-shadow: 0 1px 1px darken(#fff, 5%);
     & .mobile-left-nav {
       & a {
         margin-left: 2vw;
@@ -37,34 +52,72 @@
         cursor: pointer;
       }
       & .mobile-menu {
+        height: 1rem;
+        width: 2rem;
+        position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
-        width: 9vw;
-        height: 2.5vh;
-
+        justify-content: space-between;
         & span {
-          border-radius: 3px;
+          height: 3px;
           width: 100%;
-          height: 2px;
           background: #333;
           transition: all 0.3s ease-in-out;
         }
       }
     }
   }
+  .rotated {
+    &:nth-child(1) {
+      transform: translate(0, 300%) rotate(45deg);
+    }
+    &:nth-child(2) {
+      transform: translateX(90vh);
+    }
+    &:nth-child(3) {
+      transform: translate(0, -125%) rotate(-45deg);
+    }
+  }
+  .side-menu {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 1px 1px darken(#333, 20%);
+    z-index: 9999;
+    & .list-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 50%;
+      background: #fff;
+      & a {
+        text-align: center;
+        width: 100%;
+        color: #666;
+        border-top: 1px solid #f3826f;
+        padding: 1rem 0;
+        &:last-child {
+          border-bottom: 1px solid #f3826f;
+        }
+      }
+    }
+    & .close-side-menu {
+      display: flex;
+      width: 50%;
+      height: 100%;
+    }
+  }
 
-  .rotated:nth-child(1) {
-    transform-origin: 15% 30%;
-    transform: rotate(45deg);
+  .hidden {
+    transform: translateX(-100vw);
   }
-  .rotated:nth-child(2) {
-    transform-origin: 0% 0%;
-    transform: translateX(90vh);
-  }
-  .rotated:nth-child(3) {
-    transform-origin: 20% 50%;
-    transform: rotate(-45deg);
+  .show {
+    transform: translate(0);
   }
 </style>
 
@@ -80,3 +133,12 @@
     </div>
   </div>
 </nav>
+<div class={$showSideMenu ? 'side-menu show' : 'side-menu hidden'}>
+  <div class="list-container">
+    {#each navLinks as item}
+      <a>{item}</a>
+    {/each}
+    <Cart />
+  </div>
+  <div class="close-side-menu" on:click={closeMenu} on:touchstart={closeMenu} />
+</div>

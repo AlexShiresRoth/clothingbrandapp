@@ -45,16 +45,39 @@
   @media screen and (max-width: 800px) {
     header {
       width: 100%;
-      height: 40vh;
+      height: 30vh;
       & h1 {
-        font-size: 10vw;
+        font-size: 9vw;
+        font-weight: 500;
+        color: #fff;
+      }
+    }
+    .container {
+      & button {
+        width: 40vw;
+        height: 5vh;
+        font-size: 1.5vw;
+        background: transparent;
+        border: 5px solid #f3826f;
+        border-left: 5px solid #fff;
+        border-top: 5px solid #fff;
+        color: #f3826f;
+        transition: all 0.3s ease-in-out;
+        font-size: 3vw;
+        text-transform: uppercase;
+
+        &:hover {
+          cursor: pointer;
+          background: #f3826f;
+          border: 2px solid #f3826f;
+          color: #fff;
+        }
       }
     }
   }
 </style>
 
 <header id="header">
-
   <div class="container">
     <h1>{headerTitle}</h1>
     <button>Become a member</button>
