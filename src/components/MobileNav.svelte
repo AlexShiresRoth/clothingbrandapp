@@ -4,21 +4,78 @@
   import Cart from "./Cart.svelte";
   //props from Nav
   export let navLinks;
+  ////////////////////
   const logo = "F.A.W";
-  let rotated = false;
   let menu;
-  const handleClickMenu = function(e) {
-    return (
-      $showSideMenu
-        ? ((rotated = !rotated), showSideMenu.update(state => (state = false)))
-        : (rotated = true),
-      showSideMenu.update(state => (state = true))
-    );
+  let rotated = false;
+  const sideMenuController = () => {
+    let sideMenu;
+    const handleClickMenu = e => {
+      sideMenu = document.querySelector(".side-menu");
+      if ($showSideMenu) {
+        rotated = !rotated;
+        showSideMenu.update(state => (state = false));
+        sideMenu.style.transform = `translateX(-100vw)`;
+      } else {
+        rotated = true;
+        showSideMenu.update(state => (state = true));
+        sideMenu.style.transform = `translateX(0vw)`;
+      }
+    };
+    const closeMenu = () => {
+      sideMenu = document.querySelector(".side-menu");
+      if ($showSideMenu && rotated) {
+        rotated = false;
+        sideMenu.style.transform = `translateX(-100vw)`;
+        showSideMenu.update(state => (state = false));
+      }
+    };
+
+    return [handleClickMenu, closeMenu];
   };
-  const closeMenu = () => {
-    rotated = !rotated;
-    return showSideMenu.update(state => (state = false));
+
+  const sideMenuControl = sideMenuController();
+  const handleClickMenu = sideMenuControl[0];
+  const handleCloseMenu = sideMenuControl[1];
+
+  const swipeController = () => {
+    //User touch starting point
+    let startPoint;
+    let sideMenu;
+    const handleSwipeStart = e => {
+      startPoint = Math.round(e.touches[0].clientX);
+    };
+    const handleSwipeMove = e => {
+      sideMenu = document.querySelector(".side-menu");
+      let diff = Math.abs(startPoint - Math.round(e.touches[0].clientX)) / 2;
+      if (diff < 100) {
+        sideMenu.style.transform = `translateX(${-diff}vw)`;
+      }
+    };
+
+    const swipeMenuEnd = e => {
+      sideMenu = document.querySelector(".side-menu");
+      //if swipe gesture is a close menu
+      let swipeGestureDiff = Math.round(
+        startPoint - e.changedTouches[0].clientX
+      );
+      if (swipeGestureDiff > 150) {
+        rotated = false;
+        sideMenu.style.transform = `translateX(-100vw)`;
+        showSideMenu.update(state => (state = false));
+      } else {
+        rotated = true;
+        sideMenu.style.transform = `translateX(0vw)`;
+        showSideMenu.update(state => (state = true));
+      }
+    };
+    return [handleSwipeStart, handleSwipeMove, swipeMenuEnd];
   };
+
+  const swipeControl = swipeController();
+  const handleSwipeStart = swipeControl[0];
+  const handleSwipeMove = swipeControl[1];
+  const swipeMenuEnd = swipeControl[2];
 
   window.addEventListener("resize", () =>
     showSideMenu.update(state => (state = false))
@@ -98,6 +155,7 @@
       width: 50%;
       background: #fff;
       box-shadow: 0 2px 2px darken(#fff, 20%);
+      z-index: 999;
       & a {
         text-align: center;
         width: 100%;
@@ -113,6 +171,7 @@
       display: flex;
       width: 50%;
       height: 100%;
+      z-index: 999;
     }
   }
 
@@ -129,7 +188,7 @@
     <a>{logo}</a>
   </div>
   <div class="mobile-right-nav">
-    <div class="mobile-menu" bind:this={menu} on:click={handleClickMenu}>
+    <div class="mobile-menu" bind:this={menu} on:click={e => handleClickMenu()}>
       <span class:rotated />
       <span class:rotated />
       <span class:rotated />
@@ -143,5 +202,10 @@
     {/each}
     <Cart />
   </div>
-  <div class="close-side-menu" on:click={closeMenu} on:touchstart={closeMenu} />
+  <div
+    class="close-side-menu"
+    on:click={e => handleCloseMenu(e)}
+    on:touchstart={e => handleSwipeStart(e)}
+    on:touchmove={e => handleSwipeMove(e)}
+    on:touchend={e => swipeMenuEnd(e)} />
 </div>
