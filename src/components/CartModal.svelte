@@ -34,6 +34,9 @@
       z-index: 999999;
       overflow-y: scroll;
       max-height: 70%;
+      animation: 0.3s scaleIn linear forwards;
+      visibility: visible;
+      transform: scale(1);
       & button:nth-child(1) {
         background: #f3826f;
         border: 1px solid #f3826f;
@@ -50,7 +53,7 @@
       & .item {
         display: flex;
         flex-direction: row;
-        margin-top: 2vh;
+        margin-top: 5vh;
 
         & .cart-img {
           & img {
@@ -61,22 +64,42 @@
           width: 100%;
           & h4 {
             color: #f3826f;
+            font-size: 4vw;
           }
           & p {
-            font-size: 3vw;
+            font-size: 3.3vw;
           }
           & div {
             box-shadow: 0 1px 1px #eee;
             text-align: center;
+            margin: 1vh 0;
           }
         }
       }
+    }
+    & .hidden {
+      visibility: hidden;
+      transform: scale(0);
+    }
+  }
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(0.5);
+    }
+    90% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 </style>
 
 <div class="cart-modal">
-  <div class="list">
+  <div class={$showCartMobile ? 'list' : 'hidden'}>
     <button on:click={closeModal}>Close X</button>
     {#each $cartStore as item}
       <div class="item">
