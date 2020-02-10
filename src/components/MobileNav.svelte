@@ -1,7 +1,8 @@
 <script>
   // your script goes here
-  import { showSideMenu, cartStore, isMobile } from "./stores";
+  import { showSideMenu, cartStore, isMobile, showCartMobile } from "./stores";
   import Cart from "./Cart.svelte";
+  import CartModal from "./CartModal.svelte";
   //props from Nav
   export let navLinks;
   ////////////////////
@@ -145,7 +146,7 @@
     height: 100vh;
     width: 100vw;
     transition: all 0.3s ease-in-out;
-    z-index: 9999;
+    z-index: 2000;
     & .list-container {
       display: flex;
       flex-direction: column;
@@ -155,7 +156,7 @@
       width: 50%;
       background: #fff;
       box-shadow: 0 2px 2px darken(#fff, 20%);
-      z-index: 999;
+      z-index: 2001;
       & a {
         text-align: center;
         width: 100%;
@@ -171,7 +172,7 @@
       display: flex;
       width: 50%;
       height: 100%;
-      z-index: 999;
+      z-index: 2001;
     }
   }
 
@@ -209,3 +210,6 @@
     on:touchmove={e => handleSwipeMove(e)}
     on:touchend={e => swipeMenuEnd(e)} />
 </div>
+{#if $showCartMobile && $cartStore.length > 0}
+  <CartModal />
+{/if}

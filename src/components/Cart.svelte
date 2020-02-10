@@ -4,28 +4,28 @@
     cartState,
     navIntersect,
     navState,
-    isHovering
+    isHovering,
+    isMobile,
+    showCartMobile
   } from "./stores.js";
 
   let cartAmount;
-  const addToStore = cartStore.subscribe(val => {
-    return (cartAmount = val.length);
-  });
+  const addToStore = cartStore.subscribe(val => (cartAmount = val.length));
 
-  //Objects within the cart
-  let cart;
   //State of cart if user is hovering or not
   let show;
+  let cart;
   let cartArray = cartStore.subscribe(val => (cart = val));
   const handleShowCart = e => cartState.update(state => (show = true));
   const handleRemoveCart = e => cartState.update(state => (show = false));
 
   const handleRemoveFromCart = (e, item) => {
-    cartStore.update(
-      currentCart =>
-        (cart = currentCart.filter(cartItem => cartItem.id !== item.id))
+    cartStore.update(currentCart =>
+      currentCart.filter(cartItem => cartItem.id !== item.id)
     );
   };
+  //Toggle cart modal
+  const showCartModal = e => showCartMobile.update(state => (state = !state));
 </script>
 
 <style lang="scss">
@@ -171,13 +171,14 @@
 </style>
 
 <a
+  on:click={$isMobile ? e => showCartModal(e) : null}
   on:mouseenter={handleShowCart}
   on:mouseleave={handleRemoveCart}
   class={$navIntersect && $isHovering ? 'cart-link white-bg' : !$navIntersect && $isHovering ? 'cart-link white-bg' : $navIntersect && !$isHovering ? 'cart-link white-bg' : 'cart-link'}>
   Cart({cartAmount})
-  {#if show}
+  {#if show && !$isMobile}
     <div class="cart">
-      {#each cart as item}
+      {#each $cartStore as item}
         <div class="cart-item">
           <div class="cart-row">
             <div class="img-container">
