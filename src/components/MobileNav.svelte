@@ -48,7 +48,7 @@
     };
     const handleSwipeMove = e => {
       sideMenu = document.querySelector(".side-menu");
-      let diff = Math.abs(startPoint - Math.round(e.touches[0].clientX)) / 2;
+      let diff = Math.abs(startPoint - Math.round(e.touches[0].clientX)) / 1.5;
       if (diff < 100) {
         sideMenu.style.transform = `translateX(${-diff}vw)`;
       }

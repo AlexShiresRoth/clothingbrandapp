@@ -46,7 +46,7 @@
         align-items: center;
         height: 100%;
         width: 100%;
-        & button {
+        & .add {
           background: transparent;
           border: 2px solid #f3826f;
           color: #f3826f;
@@ -57,6 +57,20 @@
             cursor: pointer;
             color: #f3f3f3;
             background: #f3826f;
+          }
+        }
+        & .added {
+          background: #f3826f;
+          border: 2px solid #f3826f;
+          color: #fff;
+          height: 5vh;
+          width: 7vw;
+          transition: all 0.3s ease-in-out;
+          &:hover {
+            cursor: pointer;
+            color: #f3f3f3;
+            background: darken(#f3826f, 5%);
+            border: 2px solid darken(#f3826f, 5%);
           }
         }
       }
@@ -96,20 +110,13 @@
           & h2 {
             font-size: 5vw;
           }
-          & button {
-            background: transparent;
-            border: 2px solid #f3826f;
-            color: #f3826f;
+          & .add,
+          & .added {
             height: 4vh;
             width: 25vw;
             transition: all 0.3s ease-in-out;
             font-size: 3vw;
             margin-left: 2vw;
-            &:hover {
-              cursor: pointer;
-              color: #f3f3f3;
-              background: #f3826f;
-            }
           }
         }
       }
@@ -137,7 +144,15 @@
             <p>${item.price}</p>
           </div>
           <div class="col">
-            <button on:click={e => addToCart(e, item)}>Add To Cart</button>
+            {#if $cartStore.filter(val => val.id === item.id).length > 0}
+              <button on:click={e => addToCart(e, item)} class="added">
+                In Cart
+              </button>
+            {:else}
+              <button on:click={e => addToCart(e, item)} class="add">
+                Add to Cart
+              </button>
+            {/if}
           </div>
         </div>
       </div>

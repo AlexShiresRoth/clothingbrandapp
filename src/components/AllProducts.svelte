@@ -4,11 +4,70 @@
   import { clothes } from "./clothes";
 
   let reducedArr = clothes.slice(3, clothes.length);
-  const addToCart = (e, item) => cartStore.update(cart => [item, ...cart]);
+  const cartAnimation = () => {
+    const body = document.querySelector("body");
+    const div = document.createElement("div");
+    div.classList.add("add-cart-bubble");
+    div.innerHTML = '<i class="las la-cart-plus"></i>';
+    body.appendChild(div);
+    setTimeout(() => {
+      div.remove();
+    }, 4000);
+    console.log(body);
+  };
+
+  const addToCart = (e, item) => {
+    cartStore.update(cart => [item, ...cart]);
+    cartAnimation();
+  };
 </script>
 
 <style lang="scss">
-  /* your styles go here */
+  :global(body) {
+    .add-cart-bubble {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 2.5rem;
+      width: 2.5rem;
+      position: fixed;
+      color: #fff;
+      top: 45%;
+      left: 50%;
+      background: darken(#f3826f, 5%);
+      box-shadow: 0 10px 10px darken(#f3826f, 20%);
+      border-radius: 50%;
+      transform: translate(0, 0);
+      animation: cartAnim 2s linear forwards;
+      z-index: 99999999;
+      & i {
+        font-size: 1.5rem;
+      }
+    }
+    @keyframes cartAnim {
+      0% {
+        transform: translate(0, -10vh);
+        box-shadow: 0 10px 10px darken(#f3826f, 20%);
+      }
+      20% {
+        transform: translate(10vw, 20vh);
+        box-shadow: 0 10px 10px darken(#f3826f, 20%);
+      }
+      40% {
+        transform: translate(25vw, -20vh) scale(5);
+        box-shadow: 0 40px 40px darken(#f3826f, 40%);
+      }
+      70% {
+        transform: translate(50vw, -50vh) scale(0);
+        box-shadow: 0 10px 10px darken(#f3826f, 20%);
+      }
+      100% {
+        transform: translate(85vw, -100vh) scale(0);
+        box-shadow: 0 10px 10px darken(#f3826f, 20%);
+      }
+    }
+  }
+
   .all-products {
     display: flex;
     flex-direction: column;
@@ -72,15 +131,15 @@
           position: absolute;
           top: 0;
           right: 0;
-          border-top: 5vh solid #fff;
-          border-left: 5vh solid transparent;
           display: flex;
           & button {
-            margin-top: -5vh;
-            height: 5vh;
+            height: 6vh;
+            width: 6vw;
+            border-bottom-left-radius: 40px;
             background: #f3826f;
             border: 2px solid #f3826f;
             color: #fff;
+            transition: all 0.3s ease-in-out;
             &:hover {
               cursor: pointer;
               background: darken(#f3826f, 5%);
@@ -152,15 +211,9 @@
             }
           }
           & .add-cart-container {
-            position: absolute;
-            top: 0;
-            right: 0;
-            border-top: 5vh solid #fff;
-            border-left: 5vh solid transparent;
-            display: flex;
             & button {
-              margin-top: -5vh;
               height: 5vh;
+              width: 20vw;
               background: #f3826f;
               border: 2px solid #f3826f;
               color: #fff;
@@ -186,14 +239,17 @@
       <div class="clothing-item">
         <img src={item.img} alt={item.type} />
         <div class="add-cart-container">
-          <button on:click={e => addToCart(e, item)}>Add To Cart</button>
+          {#if $cartStore.filter(val => val.id === item.id).length > 0}
+            <button on:click={e => addToCart(e, item)}>In Cart</button>
+          {:else}
+            <button on:click={e => addToCart(e, item)}>Add to Cart</button>
+          {/if}
         </div>
         <div class="item-container">
           <h2>{item.type}</h2>
           <p>{item.desc}</p>
           <p>${item.price}</p>
         </div>
-
       </div>
     {/each}
   </div>
