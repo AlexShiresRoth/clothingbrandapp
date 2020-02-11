@@ -67,7 +67,7 @@
       position: absolute;
       min-width: 10rem;
       top: 100%;
-      left: -100%;
+      right: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
@@ -76,13 +76,13 @@
         display: flex;
         flex-direction: column;
         border-bottom: 1px solid #eee;
-        padding: 0.5rem 0;
+        padding: 1rem;
         & .cart-row {
           display: flex;
           flex-direction: row;
           & .detail-container {
-            & p {
-              font-size: 16px;
+            & h3 {
+              color: #f3826f;
             }
           }
           & .img-container {
@@ -185,7 +185,7 @@
               <img src={item.img} alt={item.type} />
             </div>
             <div class="detail-container">
-              <p>{item.type}</p>
+              <h3>{item.type}</h3>
               <p>${item.price}</p>
             </div>
           </div>

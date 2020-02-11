@@ -6,7 +6,8 @@
   header {
     background: url("https://res.cloudinary.com/snackmanproductions/image/upload/c_scale,q_52,w_2070/v1579740781/samples/napat-seang-ZackGNxY2Bw-unsplash_fpneo7.jpg");
     background-size: cover;
-    background-position: 0% 60%;
+    background-attachment: fixed;
+    background-position: 0% 80%;
     background-repeat: no-repeat;
     height: 50vh;
     display: flex;
@@ -18,7 +19,7 @@
   h1 {
     text-transform: uppercase;
     font-size: 4em;
-    font-weight: 100;
+    font-weight: 700;
     color: #f3f3f3;
   }
   .container {
@@ -47,8 +48,8 @@
   @media screen and (max-width: 800px) {
     header {
       width: 100%;
-      height: 30vh;
-      background-position: 0% 80%;
+      height: 40vh;
+      background-position: -20px -400px;
       & h1 {
         font-size: 9vw;
         font-weight: 500;

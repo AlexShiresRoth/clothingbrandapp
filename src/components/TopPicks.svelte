@@ -2,9 +2,14 @@
   // your script goes here
   import { cartStore } from "./stores.js";
   import { clothes } from "./clothes.js";
+  import { cartAnimation } from "./reusable.js";
 
   let topPicks = clothes.slice(0, 3);
-  const addToCart = (e, item) => cartStore.update(cart => [item, ...cart]);
+
+  const addToCart = (e, item) => {
+    cartStore.update(cart => [item, ...cart]);
+    cartAnimation();
+  };
 </script>
 
 <style lang="scss">

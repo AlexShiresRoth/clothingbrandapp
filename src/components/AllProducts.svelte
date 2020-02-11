@@ -2,72 +2,23 @@
   // your script goes here
   import { cartStore } from "./stores";
   import { clothes } from "./clothes";
-
-  let reducedArr = clothes.slice(3, clothes.length);
-  const cartAnimation = () => {
-    const body = document.querySelector("body");
-    const div = document.createElement("div");
-    div.classList.add("add-cart-bubble");
-    div.innerHTML = '<i class="las la-cart-plus"></i>';
-    body.appendChild(div);
-    setTimeout(() => {
-      div.remove();
-    }, 4000);
-    console.log(body);
-  };
+  import { cartAnimation } from "./reusable.js";
+  let reduced = true;
+  let clothingArr = clothes.slice(3, 6);
 
   const addToCart = (e, item) => {
     cartStore.update(cart => [item, ...cart]);
     cartAnimation();
   };
+  const expandProducts = () => {
+    reduced = !reduced;
+    return reduced
+      ? (clothingArr = clothes.slice(3, 6))
+      : (clothingArr = clothes.slice(3, clothes.length));
+  };
 </script>
 
 <style lang="scss">
-  :global(body) {
-    .add-cart-bubble {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 2.5rem;
-      width: 2.5rem;
-      position: fixed;
-      color: #fff;
-      top: 45%;
-      left: 50%;
-      background: darken(#f3826f, 5%);
-      box-shadow: 0 10px 10px darken(#f3826f, 20%);
-      border-radius: 50%;
-      transform: translate(0, 0);
-      animation: cartAnim 2s linear forwards;
-      z-index: 99999999;
-      & i {
-        font-size: 1.5rem;
-      }
-    }
-    @keyframes cartAnim {
-      0% {
-        transform: translate(0, -10vh);
-        box-shadow: 0 10px 10px darken(#f3826f, 20%);
-      }
-      20% {
-        transform: translate(10vw, 20vh);
-        box-shadow: 0 10px 10px darken(#f3826f, 20%);
-      }
-      40% {
-        transform: translate(25vw, -20vh) scale(5);
-        box-shadow: 0 40px 40px darken(#f3826f, 40%);
-      }
-      70% {
-        transform: translate(50vw, -50vh) scale(0);
-        box-shadow: 0 10px 10px darken(#f3826f, 20%);
-      }
-      100% {
-        transform: translate(85vw, -100vh) scale(0);
-        box-shadow: 0 10px 10px darken(#f3826f, 20%);
-      }
-    }
-  }
-
   .all-products {
     display: flex;
     flex-direction: column;
@@ -100,6 +51,7 @@
         box-shadow: 0 5px 5px darken(#eee, 10%);
         max-width: 100%;
         overflow: hidden;
+        animation: fadeIn 1s linear forwards;
         & img {
           width: 100%;
           transition: all 0.3s ease-in-out;
@@ -213,7 +165,7 @@
           & .add-cart-container {
             & button {
               height: 5vh;
-              width: 20vw;
+              width: 30vw;
               background: #f3826f;
               border: 2px solid #f3826f;
               color: #fff;
@@ -228,14 +180,30 @@
       }
     }
   }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    90% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 </style>
 
 <section class="all-products">
   <div class="button-container">
-    <button>View All</button>
+    <button on:click={expandProducts}>
+      {reduced ? 'View All' : 'Show Less'}
+    </button>
   </div>
   <div class="clothing-container">
-    {#each reducedArr as item}
+    {#each clothingArr as item}
       <div class="clothing-item">
         <img src={item.img} alt={item.type} />
         <div class="add-cart-container">

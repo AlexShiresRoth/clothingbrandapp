@@ -57,10 +57,10 @@
     const swipeMenuEnd = e => {
       sideMenu = document.querySelector(".side-menu");
       //if swipe gesture is a close menu
-      let swipeGestureDiff = Math.round(
-        startPoint - e.changedTouches[0].clientX
+      let swipeGestureDiff = (startPoint - e.changedTouches[0].clientX).toFixed(
+        2
       );
-      if (swipeGestureDiff > 150) {
+      if (swipeGestureDiff > 100) {
         rotated = false;
         sideMenu.style.transform = `translateX(-100vw)`;
         showSideMenu.update(state => (state = false));
